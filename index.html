@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NelSystems | Control de Pagos</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Botón de Notificaciones Moderno */
+        .btn-notify {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 20px;
+            border-radius: 12px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-notify:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Contenedor de Tarjetas */
+        #listaPagos {
+            display: grid;
+            gap: 16px;
+        }
+
+        .pago { 
+            background: var(--card-bg);
+            padding: 20px; 
+            border-radius: 16px; 
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .pago:active { transform: scale(0.98); }
+
+        .pago-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .pago-info p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Badge de Días */
+        .status-badge {
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .urgente { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .pendiente { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .ok { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h2>Pagos 2026</h2>
+        <p>NelSystems Finanzas</p>
+    </header>
+
+    <button class="btn-notify" onclick="solicitarPermiso()">
+        <span>🔔</span> Activar Recordatorios
+    </button>
+
+    <div id="listaPagos">
+        <div class="pago">
+            <div class="pago-info">
+                <h3>Servidor Web</h3>
+                <p>Vence el 15 de Octubre</p>
+            </div>
+            <div class="status-badge urgente">Faltan 2 días</div>
+        </div>
+
+        <div class="pago">
+            <div class="pago-info">
+                <h3>Dominio .com</h3>
+                <p>Vence el 20 de Noviembre</p>
+            </div>
+            <div class="status-badge ok">Faltan 45 días</div>
+        </div>
+    </div>
+
+    <script src="notifications.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+            .then(() => console.log("SW registrado con éxito"))
+            .catch(err => console.log("Error al registrar SW", err));
+        }
+    </script>
+</body>
+</html>
