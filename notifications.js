@@ -1,29 +1,44 @@
 const pagos = [
     { nombre: "Enero 1ª bis", fecha: "2026-01-09" },
-    { nombre: "Enero 2ª bis", fecha: "2026-01-23" },
     { nombre: "Salario Escolar", fecha: "2026-01-16" },
+    { nombre: "Enero 2ª bis", fecha: "2026-01-23" },
+    { nombre: "Pago de Uniformes (T1)", fecha: "2026-01-29" }, // Agregado
+
     { nombre: "Febrero 1ª bis", fecha: "2026-02-06" },
     { nombre: "Febrero 2ª bis", fecha: "2026-02-20" },
+
     { nombre: "Marzo 1ª bis", fecha: "2026-03-06" },
     { nombre: "Marzo 2ª bis", fecha: "2026-03-20" },
+
     { nombre: "Abril 1ª bis", fecha: "2026-04-03" },
     { nombre: "Abril 2ª bis", fecha: "2026-04-17" },
+    { nombre: "Pago de Uniformes (T2)", fecha: "2026-04-23" }, // Agregado
+
     { nombre: "Mayo 1ª bis", fecha: "2026-05-01" },
     { nombre: "Mayo 2ª bis", fecha: "2026-05-15" },
     { nombre: "Mayo 3ª bis", fecha: "2026-05-29" },
+
     { nombre: "Junio 1ª bis", fecha: "2026-06-12" },
     { nombre: "Junio 2ª bis", fecha: "2026-06-26" },
+
     { nombre: "Julio 1ª bis", fecha: "2026-07-10" },
+    { nombre: "Pago de Uniformes (T3)", fecha: "2026-07-16" }, // Agregado
     { nombre: "Julio 2ª bis", fecha: "2026-07-24" },
+
     { nombre: "Agosto 1ª bis", fecha: "2026-08-07" },
     { nombre: "Agosto 2ª bis", fecha: "2026-08-21" },
+
     { nombre: "Septiembre 1ª bis", fecha: "2026-09-04" },
     { nombre: "Septiembre 2ª bis", fecha: "2026-09-18" },
+
     { nombre: "Octubre 1ª bis", fecha: "2026-10-02" },
     { nombre: "Octubre 2ª bis", fecha: "2026-10-16" },
+    { nombre: "Pago de Uniformes (T4)", fecha: "2026-10-22" }, // Agregado
     { nombre: "Octubre 3ª bis", fecha: "2026-10-30" },
+
     { nombre: "Noviembre 1ª bis", fecha: "2026-11-13" },
     { nombre: "Noviembre 2ª bis", fecha: "2026-11-27" },
+
     { nombre: "Diciembre 1ª bis", fecha: "2026-12-11" },
     { nombre: "Diciembre 2ª bis", fecha: "2026-12-25" }
 ];
@@ -31,29 +46,33 @@ const pagos = [
 function solicitarPermiso() {
     Notification.requestPermission().then(permission => {
         if (permission === "granted") {
-            // Personalizamos un poco el feedback
             const btn = document.querySelector('.btn-notify');
-            btn.innerHTML = "<span>✅</span> Notificaciones Activas";
-            btn.style.borderColor = "var(--success)";
-            btn.style.color = "var(--success)";
+            if (btn) {
+                btn.innerHTML = "<span>✅</span> Notificaciones Activas";
+                btn.style.borderColor = "var(--success)";
+                btn.style.color = "var(--success)";
+            }
         }
     });
 }
 
 function renderizarPagos() {
     const hoy = new Date();
-    // Ajuste para ignorar la hora en la comparación de días
     hoy.setHours(0, 0, 0, 0);
     
     const contenedor = document.getElementById("listaPagos");
-    contenedor.innerHTML = ""; // Limpiar antes de renderizar
+    if (!contenedor) return;
+    
+    contenedor.innerHTML = ""; 
 
-    pagos.forEach(pago => {
+    // Ordenamos los pagos por fecha para asegurar la cronología
+    const pagosOrdenados = [...pagos].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+    pagosOrdenados.forEach(pago => {
         const fechaPago = new Date(pago.fecha + "T00:00:00");
         const diferenciaTiempo = fechaPago - hoy;
         const dias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
 
-        // Solo mostrar pagos futuros o de hoy
         if (dias >= 0) {
             const div = document.createElement("div");
             div.className = "pago";
@@ -74,7 +93,7 @@ function renderizarPagos() {
             div.innerHTML = `
                 <div class="pago-info">
                     <h3>${pago.nombre}</h3>
-                    <p>📅 ${fechaPago.toLocaleDateString('es-ES', { day: '2-digit', month: 'long' })}</p>
+                    <p>📅 ${fechaPago.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                 </div>
                 <div class="status-badge ${claseStatus}">
                     ${textoDias}
@@ -88,7 +107,6 @@ function renderizarPagos() {
 
 function notificarPago(nombre, mensaje) {
     if (Notification.permission === "granted") {
-        // Evitar múltiples notificaciones (lógica simple)
         const cacheKey = `notificado_${nombre}`;
         if (!localStorage.getItem(cacheKey)) {
             new Notification("Recordatorio de Pago", {
@@ -100,5 +118,4 @@ function notificarPago(nombre, mensaje) {
     }
 }
 
-// Ejecutar al cargar
 document.addEventListener("DOMContentLoaded", renderizarPagos);
