@@ -1,4 +1,4 @@
-const CACHE_NAME = "pagos-v2"; // version
+const CACHE_NAME = "pagos-v3"; // version
 const ASSETS_TO_CACHE = [
     "./",
     "./index.html",
